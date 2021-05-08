@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch } from "react-redux";
 import {
   FlatList,
   StyleSheet,
@@ -14,49 +15,65 @@ import colors from "../config/colors";
 import routes from "../navigation/routes";
 import Screen from "./Screen";
 import { ALL_PRODUCTS_QUERY } from "../../api/productList";
-import { CartContext } from "../auth/context";
+import { addToCart } from "../Store/cart";
+import { CURRENT_USER_QUERY } from "../../api/user";
+import PRODUCTS_BY_STORE_QUERY from "../../api/ProductsByStore";
 
 // import ActivityIndicator from "../components/lists/ActivityIndicator";
 
-function ListingsScreen({ navigation }) {
-  const [cart, setCart] = useState([]);
-  const { data, error, loading } = useQuery(ALL_PRODUCTS_QUERY);
+function ListingsScreen({ navigation, route }) {
+  //
+  const dispatch = useDispatch();
+  const store = route.params;
 
-  if (error) return <Text>Error: {error.message}</Text>;
-  if (loading)
-    return (
-      <View style={[styles.container, styles.horizontal]}>
-        <ActivityIndicator size="large" color="#00ff00" />
-      </View>
-    );
+  // const { data, error, loading } = useQuery(PRODUCTS_BY_STORE_QUERY, {
+  //   variables: {
+  //     id: store.id,
+  //   },
+  // });
+
+  // if (error) return <Text>Error: {error.message}</Text>;
+  // if (loading)
+  //   return (
+  //     <View style={[styles.container, styles.horizontal]}>
+  //       <ActivityIndicator size="large" color="#00ff00" />
+  //     </View>
+  //   );
 
   return (
-    <CartContext.Provider value={{ cart, setCart }}>
-      {/* <ActivityIndicator visible={loading ? true : false} /> */}
-
-      <Screen style={styles.screen}>
-        <FlatList
-          data={data.products}
-          keyExtractor={(listing) => listing.id.toString()}
-          renderItem={({ item }) => (
-            <Card
-              title={item.name}
-              subTitle={"Rs." + item.price}
-              id={item.id}
-              image={{ uri: `http://127.0.0.1:8000/media/${item.image}` }}
-              onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
-              AddToCart={() => setCart([item])}
-            />
-          )}
-        />
-      </Screen>
-    </CartContext.Provider>
+    <FlatList
+      data={store.productSet.edges}
+      keyExtractor={(listing) => listing.node.id}
+      renderItem={({ item }) => (
+        <Screen style={styles.screen}>
+          <Card
+            title={item.node.name}
+            subTitle={"Rs." + item.node.price}
+            id={item.node.id}
+            image={{ uri: `http://127.0.0.1:8000/media/${item.node.image}` }}
+            onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+            AddToCart={() => {
+              dispatch(
+                addToCart({
+                  id: item.node.id,
+                  name: item.node.name,
+                  price: item.node.price,
+                  image: item.node.image,
+                  brand: item.node.brand,
+                })
+              );
+              // console.log(cart);
+            }}
+          />
+        </Screen>
+      )}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 10,
+    // padding: 10,
     backgroundColor: colors.light,
     flex: 1,
   },

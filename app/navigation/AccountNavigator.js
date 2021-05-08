@@ -2,7 +2,8 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import AccountScreen from "../screens/AccountScreen";
 import MessagesScreen from "../screens/MessagesScreen";
-import { ceil } from "react-native-reanimated";
+import CreateStoreScreen from "../screens/CreateStoreScreen";
+import ProductByStoreScreen from "../screens/ProductsByStoreScreen";
 
 const Stack = createStackNavigator();
 
@@ -19,7 +20,6 @@ const AccountNavigator = () => (
         headerTintColor: "#fff",
         headerTitleStyle: {
           fontWeight: "bold",
-          alignSelf: "center",
         },
       }}
     />
@@ -28,6 +28,36 @@ const AccountNavigator = () => (
       component={MessagesScreen}
       options={{
         title: "Messages",
+        headerStyle: {
+          backgroundColor: "#f4511e",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+          alignSelf: "center",
+        },
+      }}
+    />
+    <Stack.Screen
+      name="createStore"
+      component={CreateStoreScreen}
+      options={{
+        title: "My Store",
+        headerStyle: {
+          backgroundColor: "#f4511e",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+          alignSelf: "center",
+        },
+      }}
+    />
+    <Stack.Screen
+      name="catalogue"
+      component={ProductByStoreScreen}
+      options={{
+        title: "My Store",
         headerStyle: {
           backgroundColor: "#f4511e",
         },

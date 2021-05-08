@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   StyleSheet,
   Image,
@@ -6,9 +6,10 @@ import {
   Text,
   ActivityIndicator,
   View,
+  Button,
 } from "react-native";
 import * as Yup from "yup";
-import { useMutation } from "@apollo/client";
+import { useMutation, useLazyQuery } from "@apollo/client";
 
 import Screen from "./Screen";
 import {
@@ -17,19 +18,26 @@ import {
   SubmitButton,
   ErrorMessage,
 } from "../components/forms";
+import { CURRENT_USER_QUERY } from "../../api/user";
 
 import { LOGIN_MUTATION } from "../../api/login";
 import useAuth from "../auth/useAuth";
 import AuthContext from "../auth/context";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(4).label("Password"),
 });
 
-function LoginScreen(props) {
+function LoginScreen({ navigation }) {
   const auth = useAuth();
   const { user, setUser } = useContext(AuthContext);
+
+  // const [runQuery, { data }] = useLazyQuery(CURRENT_USER_QUERY);
+
+  // if (data) console.log("Data Fetched");
+
   // const [loginFailed, setLoginFailed] = useState(false);
   //
   // const [formState, setFormState] = useState({ email: "", password: "" });
@@ -38,8 +46,10 @@ function LoginScreen(props) {
     onCompleted: ({ tokenAuth }) => {
       try {
         auth.logIn(tokenAuth.token);
-        const user = tokenAuth.payload.email;
+
+        const user = tokenAuth.payload;
         setUser(user);
+        // runQuery();
       } catch (error) {
         console.log("Token Could not be saved");
       }
@@ -52,7 +62,9 @@ function LoginScreen(props) {
         <ActivityIndicator size="large" color="#00ff00" />
       </View>
     );
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (error) return <ErrorMessage visible error={error.message} />;
+
+  // <Text>Error: {error.message}</Text>;
 
   return (
     <Screen style={styles.viewcontainer}>
@@ -67,7 +79,6 @@ function LoginScreen(props) {
           });
         }}
         validationSchema={validationSchema}
-        // onClick={}
       >
         {/* <ErrorMessage
           error="Invalid email and/or password."
@@ -93,6 +104,14 @@ function LoginScreen(props) {
         />
         <SubmitButton title="Login" />
       </Form>
+      <View style={styles.linkContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <Text style={styles.text}>Create Account?</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={styles.text}>Forgot Password?</Text>
+        </TouchableOpacity>
+      </View>
     </Screen>
   );
 }
@@ -102,10 +121,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     alignSelf: "center",
-    marginTop: 50,
+    marginTop: 30,
     marginBottom: 20,
   },
   container: {
@@ -115,6 +134,14 @@ const styles = StyleSheet.create({
   horizontal: {
     flexDirection: "row",
     justifyContent: "space-around",
+    padding: 10,
+  },
+  linkContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  text: {
+    color: "blue",
     padding: 10,
   },
 });

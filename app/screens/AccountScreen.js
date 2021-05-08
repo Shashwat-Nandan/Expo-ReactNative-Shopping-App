@@ -11,11 +11,12 @@ import AuthContext from "../auth/context";
 
 const menuItems = [
   {
-    title: "Catalogue",
+    title: "My Shop",
     icon: {
       name: "format-list-bulleted",
       backgroundColor: colors.primary,
     },
+    targetScreen: routes.PRODUCTS_BY_STORE,
   },
   {
     title: "My Messages",
@@ -35,9 +36,9 @@ function AccountScreen({ navigation }) {
     <Screen style={styles.screen}>
       <View style={styles.container}>
         <ListItem
-          title={user}
+          title={user.username}
           // title="Somnath"
-          // subTitle="somnath@gmail.com"
+          subTitle={user.email}
           image={require("../assets/som.jpg")}
         />
       </View>

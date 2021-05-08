@@ -7,24 +7,28 @@ const CURRENT_USER_QUERY = gql`
       email
       id
       kind
-      cartSet {
-        id
-        quantity
-        product {
-          id
-          price
-          name
-          description
-          image
+      store {
+        productSet {
+          edges {
+            node {
+              id
+              name
+              description
+              price
+              skuSize
+              brand
+              image
+            }
+          }
         }
       }
     }
   }
 `;
 
-export function useUser() {
+export default function useUser() {
   const { data } = useQuery(CURRENT_USER_QUERY);
-  return data?.me;
+  return data?.me.username;
 }
 
 export { CURRENT_USER_QUERY };

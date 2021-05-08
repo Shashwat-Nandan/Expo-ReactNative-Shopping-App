@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 
 const SEARCH_PRODUCT_QUERY = gql`
   query Search_Product($search: String) {

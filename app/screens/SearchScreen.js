@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Button,
@@ -6,28 +6,25 @@ import {
   Text,
   SafeAreaView,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 
 import Screen from "../screens/Screen";
 import TextInput from "../components/lists/TextInput";
 import { SEARCH_PRODUCT_QUERY } from "../../api/searchProduct";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
+import colors from "../config/colors";
 
 function SearchScreen(props) {
   const [query, setQuery] = useState("shampoo");
   //   const [search, setSearch] = useState("redux");
 
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
   const [runQuery, { data, loading, error }] = useLazyQuery(
-    SEARCH_PRODUCT_QUERY
+    SEARCH_PRODUCT_QUERY,
+    {
+      fetchPolicy: "no-cache",
+    }
   );
-
-  // you can now just use the data as you would regularly do:
-  if (data) {
-    console.log(data);
-  }
 
   if (loading)
     return (
@@ -43,39 +40,36 @@ function SearchScreen(props) {
         // style={styles.input}
         placeholder="Search for the product"
         value={query}
-        onChangeText={(query) => setQuery(query)}
+        // onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
       />
-      <Button
-        color="#f194ff"
-        title="Search"
-        onPress={() => {
-          // e.preventDefault();
-          console.log(query);
+      <View style={styles.viewContainer}>
+        <TouchableOpacity
+          style={styles.searchContainer}
+          onPress={() => {
+            console.log(query);
 
-          runQuery({
-            variables: {
-              search: query,
-            },
-          });
-          setIsLoading(false);
-        }}
-      />
+            runQuery({
+              variables: {
+                search: query,
+              },
+            });
+          }}
+        >
+          <Text style={styles.button}>SEARCH</Text>
+        </TouchableOpacity>
+      </View>
 
-      <View>
-        {/* {data?.products.map((item) => {
-          <View key={item.id}>
-            <Text>{item.brand}</Text>
-          </View>;
-        })} */}
-        {isLoading && data ? (
-          <Text>Loading....</Text>
-        ) : (
-          data?.products.map((item) => {
+      <View style={styles.resultContainer}>
+        {data &&
+          data.products.map((item) => {
             <View key={item.id}>
-              <Text>{item.brand}</Text>
+              <Text>{item.name}</Text>
+              <Text>{item.description}</Text>
+              <Text>{item.price}</Text>
             </View>;
-          })
-        )}
+          })}
+        {/* // <Text>{query}</Text> */}
       </View>
     </SafeAreaView>
   );
@@ -93,6 +87,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     padding: 10,
+  },
+  resultContainer: {
+    marginTop: 30,
+  },
+  searchContainer: {
+    backgroundColor: colors.yellow,
+    width: 100,
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 7,
+  },
+  button: {
+    color: colors.dark,
+    fontWeight: "bold",
+    fontSize: 16,
+    textTransform: "capitalize",
+  },
+  viewContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
   },
 });
 

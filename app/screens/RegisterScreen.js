@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Alert } from "react-native";
+import { StyleSheet, Alert, View, TouchableOpacity, Text } from "react-native";
 import * as Yup from "yup";
 import { useMutation } from "@apollo/client";
 
@@ -26,7 +26,7 @@ function RegisterScreen({ navigation }) {
         "Register",
         `${createUser.user.username} has successfully registered`
       );
-      navigation.goBack();
+      navigation.navigate("Login");
     },
   });
   return (
@@ -69,6 +69,11 @@ function RegisterScreen({ navigation }) {
         />
         <SubmitButton title="Register" />
       </Form>
+      <View>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={styles.text}>Already have an Account?</Text>
+        </TouchableOpacity>
+      </View>
     </Screen>
   );
 }
@@ -76,6 +81,9 @@ function RegisterScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+  },
+  text: {
+    color: "blue",
   },
 });
 

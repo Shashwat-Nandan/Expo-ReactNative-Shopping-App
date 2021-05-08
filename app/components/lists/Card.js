@@ -5,11 +5,11 @@ import {
   Image,
   TouchableWithoutFeedback,
   Button,
+  TouchableHighlight,
 } from "react-native";
 
 import Text from "./Text";
 import colors from "../../config/colors";
-// import AddToCart from "../../../api/AddToCart";
 
 function Card({ title, subTitle, image, onPress, AddToCart }) {
   return (
@@ -26,10 +26,10 @@ function Card({ title, subTitle, image, onPress, AddToCart }) {
             </Text>
           </View>
           <View style={styles.viewContainer}>
-            <Text style={styles.title} numberOfLines={1}>
-              Quantity:
-            </Text>
-            <Button title="Add to Cart" onPress={AddToCart} />
+            <TouchableHighlight style={styles.button} onPress={AddToCart}>
+              {/* <Button title="Add to Cart" onPress={AddToCart} /> */}
+              <Text style={styles.text}>Add To Cart</Text>
+            </TouchableHighlight>
           </View>
         </View>
       </View>
@@ -40,8 +40,9 @@ function Card({ title, subTitle, image, onPress, AddToCart }) {
 const styles = StyleSheet.create({
   card: {
     borderRadius: 15,
+    borderWidth: 0.5,
     backgroundColor: colors.white,
-    marginBottom: 20,
+    // marginBottom: 5,
     overflow: "hidden",
     flex: 1,
     elevation: 5, // works only in Android
@@ -67,13 +68,20 @@ const styles = StyleSheet.create({
     color: colors.secondary,
     fontWeight: "bold",
   },
-  title: {
-    marginBottom: 7,
+  button: {
+    height: 40,
+    width: 110,
+    borderRadius: 10,
+    backgroundColor: colors.yellow,
+    // marginLeft: 50,
+    // marginRight: 50,
+    // marginTop: 20,
   },
-  viewContainer: {
-    // alignContent: "stretch",
-    // paddingLeft: 60,
-    // paddingRight: 20,
+  text: {
+    color: colors.medium,
+    padding: 10,
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

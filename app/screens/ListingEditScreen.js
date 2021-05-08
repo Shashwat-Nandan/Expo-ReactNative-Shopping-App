@@ -1,7 +1,14 @@
 import React from "react";
-import { StyleSheet, View, Text, ActivityIndicator, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+} from "react-native";
 import * as Yup from "yup";
-import { useMutation } from "@apollo/client";
+import { useMutation, useApolloClient } from "@apollo/client";
 
 import {
   Form,
@@ -13,6 +20,8 @@ import CategoryPickerItem from "../components/lists/CategoryPickerItem";
 import Screen from "./Screen";
 import FormImagePicker from "../components/forms/FormImagePicker";
 import NEWPRODUCT_MUTATION from "../../api/createProduct";
+
+import { ALL_PRODUCTS_QUERY } from "../../api/productList";
 // import useLocation from "../hooks/useLocation";
 
 const validationSchema = Yup.object().shape({
@@ -26,11 +35,27 @@ const validationSchema = Yup.object().shape({
 });
 
 //
-function ListingEditScreen() {
+function ListingEditScreen({ navigation }) {
+  const client = useApolloClient();
   // const location = useLocation();
   const [product, { error, loading }] = useMutation(NEWPRODUCT_MUTATION, {
     onCompleted: () => {
       Alert.alert("New Product", "You have Successfully added the product");
+      navigation.navigate("listing");
+    },
+    // refetchQueries: [{ query: ALL_PRODUCTS_QUERY }],
+    update(cache, { data: { createProduct } }) {
+      const data = cache.readQuery({
+        query: ALL_PRODUCTS_QUERY,
+      });
+      // existingProducts.products = [...existingProducts.products, createProduct];
+      console.log(data);
+      cache.writeQuery({
+        query: ALL_PRODUCTS_QUERY,
+        data: {
+          products: [createProduct, ...data.products],
+        },
+      });
     },
   });
   if (loading)
@@ -92,7 +117,7 @@ function ListingEditScreen() {
           numberOfLines={3}
           placeholder="Description"
         />
-        <SubmitButton title="Add Product" />
+        <SubmitButton title="+ Add Product" />
       </Form>
     </Screen>
   );

@@ -4,4 +4,6 @@ export default Object.freeze({
   LOGIN: "Login",
   MESSAGES: "Messages",
   REGISTER: "Register",
+  CREATE_STORE: "createStore",
+  PRODUCTS_BY_STORE: "catalogue",
 });

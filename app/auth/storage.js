@@ -1,8 +1,9 @@
 import * as SecureStore from "expo-secure-store";
 // import { ActivityIndicator, View, Text } from "react-native";
 
-import { CURRENT_USER } from "../../api/user";
-import { useQuery } from "@apollo/client";
+import { CURRENT_USER_QUERY } from "../../api/user";
+import { useQuery, useApolloClient } from "@apollo/client";
+import AuthContext from "./context";
 
 const key = "authToken";
 
@@ -22,11 +23,12 @@ const getToken = async () => {
   }
 };
 
-const getUser = () => {
-  // const token = await getToken();
-  const { data } = useQuery(CURRENT_USER);
+const getUser = async () => {
+  // const client = useApolloClient();
+  // const { user, setUser } = useContext(AuthContext);
 
-  return data?.me?.username;
+  const token = await getToken();
+  client.query(CURRENT_USER_QUERY).then((result) => setUser(result.data.me));
 };
 
 const removeToken = async () => {
