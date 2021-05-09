@@ -5,7 +5,7 @@ import AuthContext from "./context";
 import { useQuery, useApolloClient } from "@apollo/client";
 import { CURRENT_USER_QUERY } from "../../api/user";
 
-export default useAuth = () => {
+const useAuth = () => {
   // const { user, setUser } = useContext(AuthContext);
   // const client = useApolloClient();
 
@@ -23,3 +23,5 @@ export default useAuth = () => {
 
   return { logIn, logOut };
 };
+
+export default useAuth;
