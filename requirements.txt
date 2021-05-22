@@ -1,0 +1,16 @@
+Version 1
+[] Add animations for product addition using lottie react native library
+[] Add focus on first input using useRef and useEffect hook. Autofocus property of TextInput 
+    can also be used.
+[] Implement cache update when adding or deleting product 
+[] Implement useCallback fn on product list rendering page to avoid re rendering
+[x] Implement debounce fn from lodash.debounce or write an own useDebounce hook. Use it with 
+    useMemo in the search component to avoid re rendering and delayed search
+[] Add an image field in the store model
+[] Add a go to store button on the store list page with proper alignment
+[] Add product should open a modal instead of a screen
+[] Add razorpay api on the backend for orderid, paymentid creation
+[] Integrate razorpay in the front end
+[] Evaluate eject process and its repercussion on the project
+
+

@@ -5,7 +5,7 @@ import {
   Text,
   ActivityIndicator,
   Alert,
-  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import * as Yup from "yup";
 import { useMutation, useApolloClient } from "@apollo/client";
@@ -20,6 +20,7 @@ import CategoryPickerItem from "../components/lists/CategoryPickerItem";
 import Screen from "./Screen";
 import FormImagePicker from "../components/forms/FormImagePicker";
 import NEWPRODUCT_MUTATION from "../../api/createProduct";
+// import UploadScreen from "./UploadScreen";
 
 import { ALL_PRODUCTS_QUERY } from "../../api/productList";
 // import useLocation from "../hooks/useLocation";
@@ -38,6 +39,9 @@ const validationSchema = Yup.object().shape({
 function ListingEditScreen({ navigation }) {
   const client = useApolloClient();
   // const location = useLocation();
+  // const [uploadVisible, setUploadVisible] = useState(false);
+  // const [progress, setProgress] = useState(0);
+
   const [product, { error, loading }] = useMutation(NEWPRODUCT_MUTATION, {
     onCompleted: () => {
       Alert.alert("New Product", "You have Successfully added the product");
@@ -58,16 +62,29 @@ function ListingEditScreen({ navigation }) {
       });
     },
   });
-  if (loading)
+  if (loading) {
+    // (progress) => setProgress(progress);
+    // setUploadVisible(true);
     return (
       <View style={[styles.container, styles.horizontal]}>
         <ActivityIndicator size="large" color="#00ff00" />
       </View>
     );
-  if (error) return <Text>Error: {error.message}</Text>;
+  }
+  //
+  if (error) {
+    // setUploadVisible(false);
+    return <Text>Error: {error.message}</Text>;
+  }
 
   return (
-    <Screen style={styles.viewcontainer}>
+    // <Screen style={styles.viewcontainer}>
+    <SafeAreaView>
+      {/* <UploadScreen
+        onDone={() => setUploadVisible(false)}
+        progress={progress}
+        visible={uploadVisible}
+      /> */}
       <Form
         initialValues={{
           title: "",
@@ -77,7 +94,6 @@ function ListingEditScreen({ navigation }) {
           skuSize: "",
           images: [],
         }}
-        // onSubmit={(values) => console.log(location)}
         validationSchema={validationSchema}
         onSubmit={({ title, price, description, Brand, skuSize }) => {
           return product({
@@ -119,7 +135,8 @@ function ListingEditScreen({ navigation }) {
         />
         <SubmitButton title="+ Add Product" />
       </Form>
-    </Screen>
+      {/* </Screen> */}
+    </SafeAreaView>
   );
 }
 

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   View,
-  Button,
   StyleSheet,
   Text,
   SafeAreaView,
@@ -14,10 +13,11 @@ import TextInput from "../components/lists/TextInput";
 import { SEARCH_PRODUCT_QUERY } from "../../api/searchProduct";
 import { useLazyQuery } from "@apollo/client";
 import colors from "../config/colors";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
 
-function SearchScreen(props) {
+function SearchScreen() {
   const [query, setQuery] = useState("shampoo");
-  //   const [search, setSearch] = useState("redux");
+  const debouncedQuery = useDebouncedValue(query, 200);
 
   const [runQuery, { data, loading, error }] = useLazyQuery(
     SEARCH_PRODUCT_QUERY,
@@ -47,11 +47,9 @@ function SearchScreen(props) {
         <TouchableOpacity
           style={styles.searchContainer}
           onPress={() => {
-            console.log(query);
-
             runQuery({
               variables: {
-                search: query,
+                search: debouncedQuery,
               },
             });
           }}
@@ -59,17 +57,21 @@ function SearchScreen(props) {
           <Text style={styles.button}>SEARCH</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.resultContainer}>
-        {data &&
+        {/* {data &&
           data.products.map((item) => {
             <View key={item.id}>
               <Text>{item.name}</Text>
               <Text>{item.description}</Text>
               <Text>{item.price}</Text>
             </View>;
-          })}
-        {/* // <Text>{query}</Text> */}
+          })} */}
+        {/* <Text>{data && data.products[0].name}</Text> */}
+        {data?.products.length !== 0 ? (
+          <Text>{data?.products[0].name}</Text>
+        ) : (
+          <Text>Sorry, Nothing matches your search query</Text>
+        )}
       </View>
     </SafeAreaView>
   );

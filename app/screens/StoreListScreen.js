@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   FlatList,
   Text,
+  SafeAreaView,
 } from "react-native";
 import { useQuery } from "@apollo/client";
 
@@ -30,7 +31,7 @@ function StoreListScreen({ navigation }) {
       data={data.stores}
       keyExtractor={(listing) => listing.id.toString()}
       renderItem={({ item }) => (
-        <Screen style={styles.screen}>
+        <SafeAreaView>
           <StoreItem
             onPress={() => {
               navigation.navigate("listing", item);
@@ -42,7 +43,7 @@ function StoreListScreen({ navigation }) {
               uri: `http://127.0.0.1:8000/media/products/2021/04/23/atta.jpeg`,
             }}
           />
-        </Screen>
+        </SafeAreaView>
       )}
     />
   );
